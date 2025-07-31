@@ -4,10 +4,14 @@ services:
     env: python
     buildCommand: |
       pip install -r backend-python/requirements.txt
+      pip show gunicorn
+      which gunicorn
       cd EasyToGet && npm install && npm run build
-    startCommand: bash -c "pip install -r backend-python/requirements.txt && gunicorn backend-python.app:app --bind 0.0.0.0:$PORT"
+    startCommand: gunicorn backend-python.app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PORT
         value: "5001"
       - key: DATABASE_URL
         value: "sqlite:///easytoget.db" # Or your managed DB URL
+      - key: PATH
+        value: "/home/aaditya/anaconda3/bin:/usr/local/bin:/usr/bin:/bin"
