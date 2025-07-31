@@ -13,5 +13,3 @@ services:
         value: "5001"
       - key: DATABASE_URL
         value: "sqlite:///easytoget.db" # Or your managed DB URL
-      - key: PATH
-        value: "/home/aaditya/anaconda3/bin:/usr/local/bin:/usr/bin:/bin"
