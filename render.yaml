@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: easytoget-backend
+    env: python
+    buildCommand: |
+      pip install -r backend-python/requirements.txt
+      cd EasyToGet && npm install && npm run build
+    startCommand: bash -c "pip install -r backend-python/requirements.txt && gunicorn backend-python.app:app --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: PORT
+        value: "5001"
+      - key: DATABASE_URL
+        value: "sqlite:///easytoget.db" # Or your managed DB URL
