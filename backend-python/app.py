@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__, static_folder='../EasyToGet/build/static', static_url_path='/static')
 # Allow CORS from any origin for development purposes
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "https://easytoget.netlify.app"}})
 
 # React build directory path
 react_build_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../EasyToGet/build'))
