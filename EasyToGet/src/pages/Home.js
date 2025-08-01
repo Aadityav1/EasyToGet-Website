@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Results from '../components/Results';
 import SearchInput from '../components/SearchInput';
+import API_BASE_URL from '../config';
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(20px); }
@@ -184,11 +185,9 @@ const Home = () => {
       setLoading(true);
       setMessage(null);
       try {
-        // Use window.location.hostname to make it work in any environment
-        const apiUrl = `http://${window.location.hostname}:5001`;
         const url = query ? 
-          `${apiUrl}/search?q=${encodeURIComponent(query)}&_=${Date.now()}` : 
-          `${apiUrl}/content`;
+          `${API_BASE_URL}/search?q=${encodeURIComponent(query)}&_=${Date.now()}` : 
+          `${API_BASE_URL}/content`;
         
         console.log('Fetching from URL:', url);
         const response = await fetch(url, {

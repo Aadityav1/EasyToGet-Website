@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Results from '../components/Results';
+import API_BASE_URL from '../config';
 import styled, { keyframes } from 'styled-components';
 
 const fadeIn = keyframes`
@@ -64,9 +65,7 @@ const CategoryPage = () => {
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
         
-        // Use window.location.hostname to make it work in any environment
-        const apiUrl = `http://${window.location.hostname}:5001`;
-        const url = `${apiUrl}/content/category/${encodeURIComponent(transformedCategoryName)}`;
+        const url = `${API_BASE_URL}/content/category/${encodeURIComponent(transformedCategoryName)}`;
         
         console.log('Fetching from URL:', url);
         const response = await fetch(url, {
