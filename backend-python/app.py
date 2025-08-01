@@ -103,6 +103,20 @@ def init_db():
         { "id": 65,"title": "Proxmox Backup Server", "content": "Official Proxmox Backup Server software download", "url": "https://www.proxmox.com/en/downloads/category/backup-server", "category": "Backup Softwares"},
         { "id": 66,"title": "Restic", "content": "Official Restic backup software download", "url": "https://restic.net/releases/", "category": "Backup Softwares"},
         { "id": 67,"title": "rdiff-backup", "content": "Official rdiff-backup software download", "url": "https://rdiff-backup.net/download.html", "category": "Backup Softwares"},
+        { "id": 68,"title": "rsnapshot", "content": "Official rsnapshot backup software download", "url": "http://www.rsnapshot.org/downloads/", "category": "Backup Softwares"},
+        {"id": 69,"title": "SBackup", "content": "Official SBackup backup software download", "url": "https://sbackup.sourceforge.io/download.html", "category": "Backup Softwares"},
+        { "id": 70,"title": "Free Fire","content": "Official Free Fire download link", "url": "https://ff.garena.com/en/download", "category": "Games"},
+        { "id": 71,"title": "PUBG Mobile","content": "Official PUBG Mobile download link", "url": "https://www.pubgmobile.com/en-US/download/", "category": "Games"},
+        { "id": 72,"title": "Call of Duty Mobile","content": "Official Call of Duty Mobile download link", "url": "https://www.callofduty.com/mobile/download", "category": "Games"},
+        { "id": 73,"title": "Among Us","content": "Official Among Us download link", "url": "https://innersloth.com/gameAmongUs.php", "category": "Games"},
+        { "id": 74,"title": "Minecraft","content": "Official Minecraft download link", "url": "https://www.minecraft.net/en-us/download", "category": "Games"},
+        { "id": 75,"title": "League of Legends","content": "Official League of Legends download link", "url": "https://signup.leagueoflegends.com/en-us/signup/index", "category": "Games"},
+        { "id": 76,"title": "Counter-Strike: Global Offensive","content": "Official CS:GO download link", "url": "https://store.steampowered.com/app/730/CounterStrike_Global_Offensive/", "category": "Games"},
+        { "id": 77,"title": "Dota 2","content": "Official Dota 2 download link", 'url': 'https://store.steampowered.com/app/570/Dota_2/', 'category': 'Games'},
+        { 'id': 78, 'title': 'Apex Legends', 'content': 'Official Apex Legends download link', 'url': 'https://www.ea.com/games/apex-legends/download', 'category': 'Games' },
+        { 'id': 79, 'title': 'Fortnite', 'content': 'Official Fortnite download link', 'url': 'https://www.epicgames.com/fortnite/en-US/download', 'category': 'Games' },
+        { 'id': 80, 'title': 'Valorant', 'content': 'Official Valorant download link', 'url': 'https://playvalorant.com/en-us/download/', 'category': 'Games' },
+        
     ]
         
     for item in initial_data:
