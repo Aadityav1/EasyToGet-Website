@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Results from '../components/Results';
+import API_BASE_URL from '../config';
 import styled, { keyframes } from 'styled-components';
 
 const fadeIn = keyframes`
@@ -48,7 +49,7 @@ const CategoryPage = () => {
           .split('-')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
-        const response = await fetch('http://localhost:5001/content/category/' + encodeURIComponent(transformedCategoryName));
+        const response = await fetch(`${API_BASE_URL}/content/category/` + encodeURIComponent(transformedCategoryName));
         if (!response.ok) {
           setError('Failed to fetch category content. Status: ' + response.status);
           setResults([]);
