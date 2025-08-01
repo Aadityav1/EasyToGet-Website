@@ -6,10 +6,20 @@ services:
       pip install -r backend-python/requirements.txt
       pip show gunicorn
       which gunicorn
-      cd EasyToGet && npm install && npm run build
     startCommand: gunicorn backend-python.app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PORT
         value: "5001"
       - key: DATABASE_URL
         value: "sqlite:///easytoget.db" # Or your managed DB URL
+      - key: PATH
+        value: "/home/aaditya/anaconda3/bin:/usr/local/bin:/usr/bin:/bin"
+
+  - type: web
+    name: easytoget-frontend
+    env: node
+    buildCommand: cd EasyToGet && npm install && npm run build
+    startCommand: cd EasyToGet && npx serve -s build
+    envVars:
+      - key: NODE_VERSION
+        value: "22.16.0"
