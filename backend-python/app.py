@@ -105,7 +105,7 @@ def init_db():
         { "id": 67,"title": "rdiff-backup", "content": "Official rdiff-backup software download", "url": "https://rdiff-backup.net/download.html", "category": "Backup Softwares"},
         { "id": 68,"title": "rsnapshot", "content": "Official rsnapshot backup software download", "url": "http://www.rsnapshot.org/downloads/", "category": "Backup Softwares"},
         {"id": 69,"title": "SBackup", "content": "Official SBackup backup software download", "url": "https://sbackup.sourceforge.io/download.html", "category": "Backup Softwares"},
-        { "id": 70,"title": "Free Fire","content": "Official Free Fire download link", "url": "https://ff.garena.com/en/download", "category": "Games"},
+        { "id": 70,"title": "Free Fire","content": "Official Free Fire download link", "url": "https://play.google.com/store/search?q=freefire&c=apps", "category": "Games"},
         { "id": 71,"title": "PUBG Mobile","content": "Official PUBG Mobile download link", "url": "https://www.pubgmobile.com/en-US/download/", "category": "Games"},
         { "id": 72,"title": "Call of Duty Mobile","content": "Official Call of Duty Mobile download link", "url": "https://www.callofduty.com/mobile/download", "category": "Games"},
         { "id": 73,"title": "Among Us","content": "Official Among Us download link", "url": "https://innersloth.com/gameAmongUs.php", "category": "Games"},
