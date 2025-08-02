@@ -67,6 +67,7 @@ const ResultCard = styled.div`
   animation: ${fadeInUp} 0.6s ease forwards;
   animation-delay: ${props => props.index * 0.1}s;
   opacity: 0;
+  cursor: pointer;
   
   &:hover {
     transform: translateY(-8px) scale(1.02);
@@ -339,7 +340,12 @@ const Results = ({ links }) => {
       <Heading theme={theme}>Download Links ({links.length})</Heading>
       <ResultsGrid>
         {links.map((link, index) => (
-          <ResultCard key={index} theme={theme} index={index}>
+          <ResultCard 
+            key={index} 
+            theme={theme} 
+            index={index}
+            onClick={() => window.open(link.url, '_blank')}
+          >
             <ThumbnailContainer>
               <Thumbnail 
                 src={link.thumbnail || 'https://via.placeholder.com/400x200.png?text=Software'} 
@@ -351,19 +357,28 @@ const Results = ({ links }) => {
               />
               <ThumbnailOverlay>
                 <OverlayButton 
-                  onClick={() => window.open(link.url, '_blank')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(link.url, '_blank');
+                  }}
                   title="Open link"
                 >
                   <FaExternalLinkAlt />
                 </OverlayButton>
                 <OverlayButton 
-                  onClick={() => handleCopy(link.url, index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopy(link.url, index);
+                  }}
                   title="Copy URL"
                 >
                   <FaCopy />
                 </OverlayButton>
                 <OverlayButton 
-                  onClick={() => handleShare(link)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShare(link);
+                  }}
                   title="Share"
                 >
                   <FaShare />
@@ -393,7 +408,10 @@ const Results = ({ links }) => {
                 <ActionButtons>
                   <ActionButton
                     theme={theme}
-                    onClick={() => handleCopy(link.url, index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopy(link.url, index);
+                    }}
                     className={copiedIndex === index ? 'copied' : ''}
                     title="Copy URL"
                   >
@@ -404,7 +422,10 @@ const Results = ({ links }) => {
                   <ActionButton
                     theme={theme}
                     primary
-                    onClick={() => window.open(link.url, '_blank')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(link.url, '_blank');
+                    }}
                     title="Download"
                   >
                     <FaDownload />

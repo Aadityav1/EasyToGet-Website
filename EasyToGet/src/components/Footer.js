@@ -200,9 +200,9 @@ const Footer = () => {
           <FooterTitle theme={theme}>Quick Links</FooterTitle>
           <FooterLinks>
             <FooterLink href="/" theme={theme}>Home</FooterLink>
-            <FooterLink href="/category/operating-systems" theme={theme}>Operating Systems</FooterLink>
-            <FooterLink href="/category/development" theme={theme}>Development Tools</FooterLink>
-            <FooterLink href="/category/multimedia" theme={theme}>Multimedia</FooterLink>
+            <FooterLink href="/#/category/operating-systems" theme={theme}>Operating Systems</FooterLink>
+            <FooterLink href="/#/category/development" theme={theme}>Development Tools</FooterLink>
+            <FooterLink href="/#/category/multimedia" theme={theme}>Multimedia</FooterLink>
           </FooterLinks>
         </FooterSection>
         
