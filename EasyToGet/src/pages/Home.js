@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Results from '../components/Results';
 import SearchInput from '../components/SearchInput';
+import { useTheme } from '../contexts/ThemeContext';
+import { showNotification } from '../components/Notification';
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(20px); }
@@ -15,27 +17,27 @@ const hoverLift = keyframes`
 
 const HomeContainer = styled.div`
   display: flex;
+  flex-direction: column;
   max-width: 1200px;
   margin: 2rem auto;
-  gap: 1.5rem;
+  gap: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   animation: ${fadeIn} 1s ease forwards;
-  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+  background: ${props => props.theme?.cardBackground || 'rgba(255,255,255,0.95)'};
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 60px ${props => props.theme?.shadow || 'rgba(0,0,0,0.1)'};
   padding: 3rem;
-  color: #222;
-  backdrop-filter: saturate(200%) blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  transition: box-shadow 0.4s ease, transform 0.4s ease;
+  color: ${props => props.theme?.text || '#2d3748'};
+  backdrop-filter: saturate(200%) blur(20px);
+  border: 1px solid ${props => props.theme?.border || 'rgba(255, 255, 255, 0.2)'};
+  transition: all 0.4s ease;
 
   &:hover {
-    box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 32px 80px ${props => props.theme?.shadow || 'rgba(0,0,0,0.15)'};
+    transform: translateY(-4px);
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
     margin: 1rem;
     padding: 2rem;
   }
@@ -48,12 +50,13 @@ const ContentArea = styled.main`
 const HeroSection = styled.section`
   margin-bottom: 2.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   gap: 2rem;
+  text-align: center;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    gap: 1.5rem;
   }
 `;
 
@@ -74,7 +77,11 @@ const HeroTitle = styled.h1`
   font-size: 3.5rem;
   margin-bottom: 0.75rem;
   font-weight: 900;
-  color: #1a202c;
+  background: linear-gradient(135deg, ${props => props.theme?.primary || '#5a67d8'}, ${props => props.theme?.secondary || '#764ba2'});
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -83,9 +90,10 @@ const HeroTitle = styled.h1`
 
 const HeroDescription = styled.p`
   font-size: 1.35rem;
-  color: #4a5568;
+  color: ${props => props.theme?.textSecondary || '#4a5568'};
   line-height: 1.6;
   margin-bottom: 1.75rem;
+  text-align: center;
 
   @media (max-width: 768px) {
     font-size: 1.15rem;
@@ -93,23 +101,25 @@ const HeroDescription = styled.p`
 `;
 
 const CallToAction = styled.button`
-  background-color: #5a67d8;
+  background: linear-gradient(135deg, ${props => props.theme?.primary || '#5a67d8'}, ${props => props.theme?.secondary || '#764ba2'});
   color: white;
   font-weight: 700;
-  padding: 0.85rem 1.75rem;
+  padding: 1rem 2rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 25px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
   animation: ${hoverLift} 3s ease infinite;
+  box-shadow: 0 8px 25px ${props => props.theme?.primary || '#5a67d8'}40;
+  margin: 0 auto;
+  display: block;
 
   &:hover,
   &:focus {
-    background-color: #4c51bf;
-    outline: 3px solid #a3bffa;
-    outline-offset: 3px;
-    box-shadow: 0 0 12px #4c51bf;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 12px 35px ${props => props.theme?.primary || '#5a67d8'}60;
+    outline: none;
   }
 `;
 
@@ -142,7 +152,17 @@ const Message = styled.div`
   font-weight: 600;
   text-align: center;
   animation: ${fadeIn} 0.5s ease forwards;
-  color: ${props => props.error ? '#e53e3e' : '#38a169'};
+  color: ${props => props.error ? (props.theme?.error || '#e53e3e') : (props.theme?.success || '#38a169')};
+  padding: 1rem;
+  border-radius: 12px;
+  background: ${props => props.error ? 
+    (props.theme?.error || '#e53e3e') + '20' : 
+    (props.theme?.success || '#38a169') + '20'
+  };
+  border: 1px solid ${props => props.error ? 
+    (props.theme?.error || '#e53e3e') + '40' : 
+    (props.theme?.success || '#38a169') + '40'
+  };
 `;
 
 const CenteredSearchBarWrapper = styled.div`
@@ -162,6 +182,7 @@ function useDebounce(value, delay) {
 }
 
 const Home = () => {
+  const { theme } = useTheme();
   const [results, setResults] = useState([]);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -217,11 +238,22 @@ const Home = () => {
           };
         });
         setResults(resultsWithThumbnails);
-        setMessage(resultsWithThumbnails.length === 0 ? 'No results found.' : `Found ${resultsWithThumbnails.length} result(s).`);
+        if (resultsWithThumbnails.length === 0) {
+          setMessage('No results found.');
+          if (query) {
+            showNotification(`No results found for "${query}". Try different keywords.`, 'warning', 3000);
+          }
+        } else {
+          setMessage(`Found ${resultsWithThumbnails.length} result(s).`);
+          if (query) {
+            showNotification(`Found ${resultsWithThumbnails.length} results for "${query}"`, 'success', 2000);
+          }
+        }
       } catch (e) {
         console.error('Fetch error in Home.js:', e);
         setResults([]);
         setMessage('Error fetching data: ' + e.message);
+        showNotification('Failed to fetch data. Please check your connection and try again.', 'error', 5000);
       }
       setLoading(false);
     };
@@ -229,7 +261,7 @@ const Home = () => {
   }, [debouncedSearchQuery]);
 
   const onCallToActionClick = () => {
-    alert('Welcome to EasyToGet! Start by using the search bar below.');
+    showNotification('Welcome to EasyToGet! Start by using the search bar below to find your favorite software.', 'success', 4000);
   };
 
   const handleSearchInputChange = async (query) => {
@@ -238,18 +270,18 @@ const Home = () => {
   };
 
   return (
-    <HomeContainer>
+    <HomeContainer theme={theme}>
       <ContentArea>
         <HeroSection>
           <HeroText>
-            <HeroTitle>Welcome to EasyToGet!</HeroTitle>
-            <HeroDescription>
-              Your one-stop platform to discover, download, and enjoy your favorite content effortlessly.
+            <HeroTitle theme={theme}>Welcome to EasyToGet!</HeroTitle>
+            <HeroDescription theme={theme}>
+              Your one-stop platform to discover, download, and enjoy your favorite software effortlessly.
             </HeroDescription>
-            <CallToAction onClick={onCallToActionClick}>Get Started</CallToAction>
+            <CallToAction theme={theme} onClick={onCallToActionClick}>Get Started</CallToAction>
           </HeroText>
           <ImageContainer>
-            <HeroImage src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Welcome illustration" />
+            <HeroImage src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=600&q=80" alt="Software downloads illustration" />
           </ImageContainer>
         </HeroSection>
         <CenteredSearchBarWrapper>
@@ -257,14 +289,14 @@ const Home = () => {
             <SearchInput onSearch={handleSearchInputChange} loading={loading} />
           </SearchBarWrapper>
         </CenteredSearchBarWrapper>
-        {message && <Message error={message.includes('Error') || message.includes('Failed')}>{message}</Message>}
-        {loading && <Message>Loading...</Message>}
+        {message && <Message theme={theme} error={message.includes('Error') || message.includes('Failed')}>{message}</Message>}
+        {loading && <Message theme={theme}>Loading...</Message>}
         <Results
           links={results.map(item => ({ 
             name: item.title, 
             url: item.url, 
             content: item.content,
-            thumbnail: item.thumbnail || 'https://via.placeholder.com/120x90.png?text=Image', 
+            thumbnail: item.thumbnail || 'https://via.placeholder.com/400x200.png?text=Software', 
             timestamp: item.timestamp 
           }))}
         />
