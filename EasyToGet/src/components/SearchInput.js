@@ -214,13 +214,11 @@ const SearchInput = ({ onSearch, loading }) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
     setShowSuggestions(newQuery.length > 0);
-    onSearch(newQuery);
   };
 
   const handleSuggestionClick = (suggestion) => {
     setQuery(suggestion);
     setShowSuggestions(false);
-    onSearch(suggestion);
   };
 
   const clearInput = () => {
@@ -239,21 +237,45 @@ const SearchInput = ({ onSearch, loading }) => {
   };
 
   const startVoiceSearch = () => {
-    if ('webkitSpeechRecognition' in window) {
-      const recognition = new window.webkitSpeechRecognition();
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
       
-      recognition.onstart = () => setListening(true);
-      recognition.onend = () => setListening(false);
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setQuery(transcript);
-        onSearch(transcript);
+      recognition.onstart = () => {
+        setListening(true);
+        console.log('Voice recognition started');
       };
       
-      recognition.start();
+      recognition.onend = () => {
+        setListening(false);
+        console.log('Voice recognition ended');
+      };
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('Voice transcript:', transcript);
+        setQuery(transcript);
+        setShowSuggestions(false);
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Voice recognition error:', event.error);
+        setListening(false);
+      };
+      
+      try {
+        recognition.start();
+      } catch (error) {
+        console.error('Failed to start voice recognition:', error);
+        setListening(false);
+      }
+    } else {
+      console.warn('Speech recognition not supported in this browser');
+      alert('Voice search is not supported in your browser. Please try Chrome or Edge.');
     }
   };
 
