@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FaTimes, FaSearch, FaFilter, FaMicrophone } from 'react-icons/fa';
+import { showNotification } from './Notification';
 
 const shimmer = keyframes`
   0% { background-position: -200px 0; }
@@ -236,46 +237,85 @@ const SearchInput = ({ onSearch, loading }) => {
     );
   };
 
-  const startVoiceSearch = () => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const startVoiceSearch = async () => {
+    try {
+      // Check if running on HTTPS or localhost
+      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+        showNotification('Voice search requires HTTPS. Please use a secure connection.', 'warning', 4000);
+        return;
+      }
+
+      // Check browser support
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showNotification('Voice search is not supported in your browser. Please try Chrome, Edge, or Safari.', 'warning', 4000);
+        return;
+      }
+
+      // Request microphone permission first
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        showNotification('Listening... Speak now!', 'info', 2000);
+      } catch (permissionError) {
+        showNotification('Microphone permission is required for voice search. Please allow microphone access and try again.', 'error', 5000);
+        return;
+      }
+
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
+      recognition.maxAlternatives = 1;
       
       recognition.onstart = () => {
         setListening(true);
-        console.log('Voice recognition started');
       };
       
       recognition.onend = () => {
         setListening(false);
-        console.log('Voice recognition ended');
       };
       
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        console.log('Voice transcript:', transcript);
-        setQuery(transcript);
-        setShowSuggestions(false);
+        if (event.results.length > 0) {
+          const transcript = event.results[0][0].transcript.trim();
+          if (transcript) {
+            setQuery(transcript);
+            setShowSuggestions(false);
+            showNotification(`Voice search: "${transcript}"`, 'success', 3000);
+          }
+        }
       };
       
       recognition.onerror = (event) => {
-        console.error('Voice recognition error:', event.error);
         setListening(false);
+        let errorMessage = 'Voice search failed. ';
+        
+        switch (event.error) {
+          case 'no-speech':
+            errorMessage += 'No speech detected. Please try again.';
+            break;
+          case 'audio-capture':
+            errorMessage += 'Microphone not found or not working.';
+            break;
+          case 'not-allowed':
+            errorMessage += 'Microphone permission denied.';
+            break;
+          case 'network':
+            errorMessage += 'Network error occurred.';
+            break;
+          default:
+            errorMessage += 'Please try again.';
+        }
+        
+        showNotification(errorMessage, 'error', 4000);
       };
       
-      try {
-        recognition.start();
-      } catch (error) {
-        console.error('Failed to start voice recognition:', error);
-        setListening(false);
-      }
-    } else {
-      console.warn('Speech recognition not supported in this browser');
-      alert('Voice search is not supported in your browser. Please try Chrome or Edge.');
+      recognition.start();
+      
+    } catch (error) {
+      setListening(false);
+      showNotification('Voice search is not available. Please type your search instead.', 'error', 4000);
     }
   };
 
